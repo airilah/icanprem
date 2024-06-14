@@ -138,7 +138,7 @@
                                                 <div class="modal-dialog modal-lg">
                                                     <form action="{{ route('edit_produk', ['id' => $item->id]) }}" id="rooms-setting" method="post" enctype="multipart/form-data">
                                                         @csrf
-                                                        @method('POST') 
+                                                        @method('POST')
                                                         <div class="modal-content">
                                                             <div class="modal-header">
                                                                 <h5 class="modal-title">Edit Produk</h5>

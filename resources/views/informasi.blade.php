@@ -43,7 +43,7 @@
                             <input type="hidden" value="{{ auth()->user()->id }}" name="user_id">
                             <input type="hidden" id="hidden_paket_id" name="paket_id">
                             @endif
-                            <div class="card">
+                            <div class="info my-4">
                                 <div class="card-body position-relative">
                                     <h4 class="header-title mb-3">
                                         <i class="mdi mdi-numeric-2-circle-outline text-primary"></i>
@@ -72,9 +72,9 @@
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    <h4 class="header-title mb-3">
+                                    <h4 class="header-title my-3">
                                         <i class="mdi mdi-numeric-3-circle-outline text-primary"></i>
-                                        <b>Catatan Produk</b>
+                                        <b>Rules Paket:</b>
                                     </h4>
                                     <div class="row">
                                         <div class="form-group col-md-12">
@@ -104,7 +104,7 @@
                                                 <div>
                                                     @if (Auth::user())
                                                     <button type="button" onclick="submitForm('/masuk_keranjang')" class="btn btn-success"><i class="bi bi-cart4 icon"></i> Masuk Keranjang</button>
-                                                    <button type="button" onclick="submitForm('/beli_sekarang')" class="btn btn-info" style="color: #fff">Beli Sekarang</button>
+                                                    <button type="button" onclick="submitForm('/beli_sekarang', true)" class="btn btn-info" style="color: #fff">Beli Sekarang</button>
                                                     @endif
                                                     @if (!Auth::user())
                                                     <a type="button" data-bs-toggle="modal" data-bs-target="#exampleModal1" href="#" class="btn btn-success"><i class="bi bi-cart4 icon"></i> Masuk Keranjang</a>
@@ -117,6 +117,7 @@
                                 </div>
                             </div>
                         </form>
+
                     </div>
                 </div>
             </div>
@@ -147,102 +148,118 @@
     <script src="{{ asset('assets/js/main.js') }}"></script>
 
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const radioButtons = document.querySelectorAll('input[name="nama_paket"]');
+        const noteDiv = document.getElementById('note');
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const radioButtons = document.querySelectorAll('input[name="nama_paket"]');
-            const noteDiv = document.getElementById('note');
+        radioButtons.forEach(radio => {
+            radio.addEventListener('change', function () {
+                const catatan = this.getAttribute('data-catatan');
+                const catatanLines = catatan.split('\n');
+                let resultHtml = '';
 
-            radioButtons.forEach(radio => {
-                radio.addEventListener('change', function () {
-                    const catatan = this.getAttribute('data-catatan');
-                    const catatanLines = catatan.split('\n');
-                    let resultHtml = '';
-
-                    catatanLines.forEach(line => {
-                        const catatanArray = line.split(';');
-                        resultHtml += '<ul>' + catatanArray.map(cttn => `<li style="list-style: none; text-align: left;">- ${cttn}</li>`).join('') + '</ul>';
-                    });
-
-                    noteDiv.innerHTML = resultHtml;
+                catatanLines.forEach(line => {
+                    const catatanArray = line.split(';');
+                    resultHtml += '<ul>' + catatanArray.map(cttn => `<li style="list-style: none; text-align: left;">- ${cttn}</li>`).join('') + '</ul>';
                 });
+
+                noteDiv.innerHTML = resultHtml;
             });
         });
+    });
 
-        function setDefaultNumber(stok, id, harga) {
-            document.getElementById('jumlah_paket').value = 1;
-            document.getElementById('stok').innerText = stok;
-            document.getElementById('stok-and-jumlah').classList.remove('d-none');
+    function setDefaultNumber(stok, id, harga) {
+        document.getElementById('jumlah_paket').value = 1;
+        document.getElementById('stok').innerText = stok;
+        document.getElementById('stok-and-jumlah').classList.remove('d-none');
+        document.getElementById('stok-warning').style.display = 'none';
+        document.getElementById('harga').value = "Rp " + harga;
+        document.getElementById('harga').setAttribute('data-harga', harga);
+        document.getElementById('price-container').classList.remove('d-none');
+        document.getElementById('hidden_paket_id').value = id;
+    }
+
+    function updatePrice() {
+        var jumlah = document.getElementById('jumlah_paket').value;
+        var baseHarga = document.getElementById('harga').getAttribute('data-harga');
+        var totalHarga = jumlah * baseHarga;
+        document.getElementById('harga').value = "Rp " + totalHarga.toLocaleString('id-ID', { maximumFractionDigits: 0 }).replace(/\./g, '');
+    }
+
+
+    document.getElementById('button-minus').addEventListener('click', function () {
+        var jumlahInput = document.getElementById('jumlah_paket');
+        var currentValue = parseInt(jumlahInput.value);
+        if (currentValue > 1) {
+            jumlahInput.value = currentValue - 1;
             document.getElementById('stok-warning').style.display = 'none';
-            document.getElementById('harga').value = "Rp " + harga;
-            document.getElementById('harga').setAttribute('data-harga', harga);  // Set the base price
-
-            document.getElementById('price-container').classList.remove('d-none');
-
-            // Update the hidden input field with the selected package id
-            document.getElementById('hidden_paket_id').value = id;
+            updatePrice();
         }
+    });
 
-        function updatePrice() {
-            var jumlah = document.getElementById('jumlah_paket').value;
-            var baseHarga = document.getElementById('harga').getAttribute('data-harga');
-            var totalHarga = jumlah * baseHarga;
-            document.getElementById('harga').value = "Rp " + totalHarga.toLocaleString('id-ID');
+    document.getElementById('button-plus').addEventListener('click', function () {
+        var jumlahInput = document.getElementById('jumlah_paket');
+        var currentValue = parseInt(jumlahInput.value);
+        var maxstok = parseInt(document.getElementById('stok').innerText);
+        if (currentValue < maxstok) {
+            jumlahInput.value = currentValue + 1;
+            document.getElementById('stok-warning').style.display = 'none';
+            updatePrice();
+        } else {
+            document.getElementById('stok-warning').style.display = 'block';
         }
+    });
 
-        document.getElementById('button-minus').addEventListener('click', function () {
-            var jumlahInput = document.getElementById('jumlah_paket');
-            var currentValue = parseInt(jumlahInput.value);
-            if (currentValue > 1) {
-                jumlahInput.value = currentValue - 1;
-                document.getElementById('stok-warning').style.display = 'none';
-                updatePrice();
-            }
-        });
+    document.getElementById('jumlah_paket').addEventListener('input', function () {
+        var jumlahInput = document.getElementById('jumlah_paket');
+        var currentValue = parseInt(jumlahInput.value);
+        if (currentValue < 1) {
+            jumlahInput.value = 1;
+        }
+        var maxstok = parseInt(document.getElementById('stok').innerText);
+        if (currentValue > maxstok) {
+            document.getElementById('stok-warning').style.display = 'block';
+        } else {
+            document.getElementById('stok-warning').style.display = 'none';
+            updatePrice();
+        }
+    });
 
-        document.getElementById('button-plus').addEventListener('click', function () {
-            var jumlahInput = document.getElementById('jumlah_paket');
-            var currentValue = parseInt(jumlahInput.value);
-            var maxstok = parseInt(document.getElementById('stok').innerText);
-            if (currentValue < maxstok) {
-                jumlahInput.value = currentValue + 1;
-                document.getElementById('stok-warning').style.display = 'none';
-                updatePrice();
+    function submitForm(actionUrl, isGet = false) {
+        const selectedPackage = document.querySelector('input[name="nama_paket"]:checked');
+        if (selectedPackage) {
+            const packageId = selectedPackage.id.split('_')[1];
+            document.getElementById('hidden_paket_id').value = packageId;
+            console.log('Package ID:', packageId);
+
+            if (isGet) {
+                const finalUrl = actionUrl.endsWith('/') ? actionUrl + packageId : actionUrl + '/' + packageId;
+                console.log('Final URL:', finalUrl);
+                window.location.href = finalUrl;
             } else {
-                document.getElementById('stok-warning').style.display = 'block';
+                var form = document.getElementById('dynamicForm');
+                form.action = actionUrl;
+                form.submit();
             }
-        });
-
-        document.getElementById('jumlah_paket').addEventListener('input', function () {
-            var jumlahInput = document.getElementById('jumlah_paket');
-            var currentValue = parseInt(jumlahInput.value);
-            if (currentValue < 1) {
-                jumlahInput.value = 1;
-            }
-            var maxstok = parseInt(document.getElementById('stok').innerText);
-            if (currentValue > maxstok) {
-                document.getElementById('stok-warning').style.display = 'block';
-            } else {
-                document.getElementById('stok-warning').style.display = 'none';
-                updatePrice();
-            }
-        });
-
-        function submitForm(actionUrl) {
-            var form = document.getElementById('dynamicForm');
-            form.action = actionUrl;
-            form.submit();
+        } else {
+            alert('Pilih paket terlebih dahulu.');
         }
+    }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const radioButtons = document.querySelectorAll('input[type="radio"][name="nama_paket"]');
-            radioButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    setDefaultNumber(this.getAttribute('data-stok'), this.id.split('_')[1], this.getAttribute('data-harga'));
-                });
+
+
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const radioButtons = document.querySelectorAll('input[type="radio"][name="nama_paket"]');
+        radioButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                setDefaultNumber(this.getAttribute('data-stok'), this.id.split('_')[1], this.getAttribute('data-harga'));
             });
         });
-    </script>
+    });
+
+</script>
 
 </body>
 

@@ -2062,44 +2062,44 @@ font-weight: 300;
 /*--------------------------------------------------------------
 # Contact Section
 --------------------------------------------------------------*/
-.contact .info {
+.info {
   padding: 40px;
   box-shadow: 0px 2px 15px color-mix(in srgb, var(--default-color), transparent 92%);
   overflow: hidden;
 }
 
-.contact .info h3 {
+.info h3 {
   font-weight: 600;
   font-size: 24px;
 }
 
-.contact .info p {
+.info p {
   color: color-mix(in srgb, var(--default-color), transparent 40%);
   margin-bottom: 30px;
   font-size: 15px;
 }
 
-.contact .info-item+.info-item {
+.info-item+.info-item {
   padding-top: 20px;
   margin-top: 20px;
   border-top: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
 }
 
-.contact .info-item i {
+.info-item i {
   font-size: 24px;
   color: var(--accent-color);
   transition: all 0.3s ease-in-out;
   margin-right: 20px;
 }
 
-.contact .info-item h4 {
+.info-item h4 {
   padding: 0;
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 5px;
 }
 
-.contact .info-item p {
+.info-item p {
   padding: 0;
   margin-bottom: 0;
   font-size: 14px;

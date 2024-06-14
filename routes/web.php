@@ -5,10 +5,11 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AktorController;
 use App\Http\Controllers\PaketController;
 use App\Http\Controllers\ProdukController;
+use App\Http\Controllers\SliderController;
+use App\Http\Controllers\InformasiController;
 use App\Http\Controllers\KeranjangController;
 use App\Http\Controllers\PemesananController;
 use App\Http\Controllers\PembayaranController;
-use App\Http\Controllers\SliderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,28 +28,23 @@ Route::post('/login', [AktorController::class, 'login'])->name('login');
 Route::post('/tambah_user', [AktorController::class, 'tambah_user'])->name('tambah_user');
 Route::get('/logout', [AktorController::class, 'logout'])->name('logout');
 Route::get('/informasi/{id}', [PaketController::class, 'informasi'])->name('informasi');
+Route::get('/informasi_beli', [InformasiController::class, 'informasi_beli'])->name('informasi_beli');
+Route::get('/informasi_bayar', [PembayaranController::class, 'informasi_bayar'])->name('informasi_bayar');
+
 
 Route::group(['middleware' => ['auth', 'cekRole:customer']], function () {
-    Route::get('/pesan/{id}', [PemesananController::class, 'pesan'])->name('pesan');
+    Route::post('/beli', [PemesananController::class, 'beli'])->name('beli');
+    Route::get('/beli_sekarang/{id}', [PemesananController::class, 'beli_sekarang'])->name('beli_sekarang');
+    Route::get('/riwayat', [PemesananController::class,'riwayat'])->name('riwayat');
+    Route::get('/riwayat/{id}', [PemesananController::class,'batal_pemesanan'])->name('batal_pemesanan');
+
     Route::post('/masuk_keranjang', [KeranjangController::class, 'masuk_keranjang'])->name('masuk_keranjang');
     Route::get('/list_keranjang', [KeranjangController::class,'list_keranjang'])->name('list_keranjang');
-    Route::get('/keranjang/{id}', [KeranjangController::class,'detele_keranjang'])->name('detele_keranjang');
+    Route::get('/hapus_keranjang/{id}', [KeranjangController::class,'hapus_keranjang'])->name('hapus_keranjang');
+    Route::get('/checkout/{id}', [KeranjangController::class,'checkout'])->name('checkout');
 
-    // Route::get('/aula1', [PaketController::class, 'hal_aula1'])->name('hal_aula1');
-    // Route::get('/aula2', [PaketController::class, 'hal_aula2'])->name('hal_aula2');
-
-    // Route::get('/tentang', [AnggotaController::class, 'anggota'])->name('anggota');
-    // Route::get('/reservasi', [InformasiController::class, 'info_reservasi'])->name('info_reservasi');
-    // Route::get('/pembayaran', [PembayaranController::class, 'hal_info_pembayaran'])->name('hal_info_pembayaran');
-
-    // Route::get('/informasi/{id}', [PaketController::class, 'hal_ipaket'])->name('hal_ipaket');
-    // Route::get('/pemesanan/{id}', [PemesananController::class, 'hal_pesan'])->name('hal_pesan');
-    // Route::post('/tambah_pemesanan', [PemesananController::class, 'tambah_pemesanan'])->name('tambah_pemesanan');
-    // Route::get('/riwayat', [PemesananController::class,'riwayat'])->name('riwayat');
-    // Route::get('/riwayat/{id}/delete', [PemesananController::class,'delete_pemesanan'])->name('delete_pemesanan');
-    // Route::post('/bukti/{id}', [PemesananController::class, 'bukti'])->name('bukti');
-    // Route::get('/invoice/{id}', [PemesananController::class, 'invoice'])->name('invoice');
-    // Route::get('/cetak_bukti/{id}', [PemesananController::class, 'cetak_butki'])->name('cetak_butki');
+    Route::get('/info_beli', [InformasiController::class, 'info_beli'])->name('info_beli');
+    Route::get('/info_bayar', [PembayaranController::class, 'info_bayar'])->name('info_bayar');
 
     Route::get('/profile/{id}/edit', [AktorController::class,'update_user'])->name('update_user');
     Route::post('/profile/{id}/edit', [AktorController::class, 'edit_gambar'])->name('edit_gambar');
@@ -60,6 +56,9 @@ Route::group(['middleware' => ['auth', 'cekRole:customer']], function () {
 
 Route::group(['middleware' => ['auth', 'cekRole:admin']], function () {
     Route::get('/admin', [AdminController::class,'dashboard'])->name('dashboard');
+    Route::get('/profile_admin', [AktorController::class,'profile_admin'])->name('profile_admin');
+    Route::post('/edit_admin', [AktorController::class,'edit_admin'])->name('edit_admin');
+
     Route::get('/paket', [PaketController::class,'daftar_paket'])->name('daftar_paket');
     Route::post('/tambah_paket', [PaketController::class,'tambah_paket'])->name('tambah_paket');
     Route::post('/paket/{id}', [PaketController::class, 'edit_paket'])->name('edit_paket');
@@ -83,12 +82,10 @@ Route::group(['middleware' => ['auth', 'cekRole:admin']], function () {
     Route::post('/keranjang/{id}', [KeranjangController::class,'edit_keranjang'])->name('edit_keranjang');
     Route::get('/keranjang/{id}', [KeranjangController::class,'delete_keranjang'])->name('delete_keranjang');
 
-
-
     Route::get('/daftar_antrian', [PemesananController::class,'daftar_antrian'])->name('daftar_antrian');
     Route::post('/tambah_antrian', [PemesananController::class,'tambah_antrian'])->name('tambah_antrian');
     Route::get('/daftar_laporan', [PemesananController::class,'daftar_laporan'])->name('daftar_laporan');
-    Route::get('/antrian/{id}', [PemesananController::class, 'pesanankonfirmasi'])->name('pesanankonfirmasi');
+    Route::get('pesanankonfirmasi/{id}', [PemesananController::class, 'pesanankonfirmasi'])->name('pesanankonfirmasi');
     Route::get('/antrian/{id}', [PemesananController::class, 'delete_pemesanan'])->name('delete_pemesanan');
 
     Route::get('/penjualan', [PemesananController::class,'daftar_penjualan'])->name('daftar_penjualan');
@@ -108,12 +105,3 @@ Route::group(['middleware' => ['auth', 'cekRole:admin']], function () {
     Route::get('/slider/{id}', [SliderController::class,'delete_slider'])->name('delete_slider');
 
 });
-// Route::get('/pemesanan_admin/{id}', [PemesananController::class, 'hal_pesan_admin'])->name('hal_pesan_admin');
-// Route::post('/tambah_pemesanan_admin', [PemesananController::class, 'tambah_pemesanan_admin'])->name('tambah_pemesanan_admin');
-// Route::get('/riwayat_admin', [PemesananController::class,'riwayat_admin'])->name('riwayat_admin');
-// Route::get('/riwayat_admin/{id}/delete', [PemesananController::class,'delete_pemesanan_admin'])->name('delete_pemesanan_admin');
-// Route::post('/bukti_admin/{id}', [PemesananController::class, 'bukti_admin'])->name('bukti_admin');
-// Route::get('/invoice_admin/{id}', [PemesananController::class, 'invoice_admin'])->name('invoice_admin');
-// Route::get('/cetak_bukti_admin/{id}', [PemesananController::class, 'cetak_butki_admin'])->name('cetak_butki_admin');
-
-//     Route::get('/', [ProdukController::class, 'hal_utama'])->name('hal_utama');

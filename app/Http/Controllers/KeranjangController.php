@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Paket;
 use App\Models\Keranjang;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,12 +16,16 @@ class KeranjangController extends Controller
     {
         $userId = Auth::id();
         $keranjang = Keranjang::where('user_id', $userId)->get();
-        $keranjangCount = Keranjang::where('user_id', $userId)->count();
+
+        $total_produk = $keranjang->sum('jumlah_paket');
+        $total_harga = DB::table('keranjangs')->where('user_id', $userId)->sum('harga');
 
         return view('list_keranjang', [
             'title' => 'Keranjang',
             'keranjang' => $keranjang,
-            'keranjangCount' => $keranjangCount,
+            'keranjangCount' => $keranjang->count(),
+            'total_produk' => $total_produk,
+            'total_harga' => $total_harga,
             'user' => Auth::user(),
             'paket' => Paket::all(),
         ]);
@@ -38,6 +43,14 @@ class KeranjangController extends Controller
         // Redirect user to appropriate page
         return redirect('/list_keranjang')->with("masuk_keranjang", "Berhasil masuk keranjang!");
     }
+
+    public function hapus_keranjang($id)
+    {
+        Keranjang::find($id)->delete();
+        return redirect()->back()->with("hapus_keranjang","keranjang Berhasil di Hapus");
+    }
+
+
 
     public function tambah_keranjang(Request $request)
     {
@@ -85,45 +98,4 @@ class KeranjangController extends Controller
     }
 
 
-
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Keranjang $keranjang)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Keranjang $keranjang)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Keranjang $keranjang)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Keranjang $keranjang)
-    {
-        //
-    }
 }

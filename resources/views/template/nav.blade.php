@@ -1,7 +1,7 @@
 <header id="header" class="header d-flex align-items-center sticky-top">
     <div class="container-fluid position-relative d-flex align-items-center justify-content-between">
 
-        <a href="index.html" class="logo d-flex align-items-center me-auto me-xl-0 mx-3">
+        <a href="/" class="logo d-flex align-items-center me-auto me-xl-0 mx-3">
             <h1 class="sitename">I CAN PREMIUM</h1>
             <span>.</span>
         </a>
@@ -9,26 +9,23 @@
         <nav id="navmenu" class="navmenu">
             <ul>
                 <li><a href="/" class="">Home<br></a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#produk">Produk</a></li>
-                <li class="dropdown"><a href="#"><span>Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+                <li><a href="/#about">Tentang</a></li>
+                <li><a href="/#produk">Produk</a></li>
+                @if (Auth::user())
+                <li><a href="/#contact">Garansi</a></li>
+                @endif
+                <li><a href="/#footer">Kontak</a></li>
+                <li class="dropdown"><a href="#"><span>Informasi</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
                     <ul>
-                        <li><a href="#">Dropdown 1</a></li>
-                        <li class="dropdown"><a href="#"><span>Deep Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
-                            <ul>
-                                <li><a href="#">Deep Dropdown 1</a></li>
-                                <li><a href="#">Deep Dropdown 2</a></li>
-                                <li><a href="#">Deep Dropdown 3</a></li>
-                                <li><a href="#">Deep Dropdown 4</a></li>
-                                <li><a href="#">Deep Dropdown 5</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="#">Dropdown 2</a></li>
-                        <li><a href="#">Dropdown 3</a></li>
-                        <li><a href="#">Dropdown 4</a></li>
+                        @if (Auth::user())
+                        <li><a href="/info_beli">Informasi Pembelian</a></li>
+                        <li><a href="/info_bayar">Metode Pembayaran</a></li>
+                        @else
+                        <li><a href="/informasi_beli">Informasi Pembelian</a></li>
+                        <li><a href="/informasi_bayar">Metode Pembayaran</a></li>
+                        @endif
                     </ul>
                 </li>
-                <li><a href="#contact">Kontak</a></li>
             </ul>
             <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
         </nav>
@@ -45,13 +42,14 @@
             </a>
             <div class="nav-item dropdown">
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="/profile/{{ auth()->user()->id }}/edit">Profile</a></li>
+                    <li><a class="dropdown-item" href="/profile/{{ auth()->user()->id }}/edit">Profil</a></li>
                     <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#ubah-password" href="#">Ubah Password</a></li>
+                    <li><a class="dropdown-item" href="/riwayat">Riwayat Pemesanan</a></li>
                     @if (auth()->user()->role == 'admin')
                     <li><a class="dropdown-item" href="{{ route('dashboard') }}">Tampilan Admin</a></li>
                     @endif
                 </ul>
-            <a class="nav-link fw-medium dropdown-toggle d-flex align-items-center mx-3" href="#" style="font-size: 1rem" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <a class="nav-link fw-medium dropdown-toggle d-flex align-items-center mx-3" href="#" style="font-size: 1rem" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 <div class="icon" style="font-size: 2rem;"><i class="bi bi-person-circle"></i></div>
                 </a>
             </div>
@@ -61,6 +59,38 @@
 </div>
 </header>
 
+
+<!-- Modal Ubah PW -->
+@if (Auth::user())
+    <div class="modal fade" id="ubah-password" data-bs-backdrop="static" data-bs-keyboard="true" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <form action="{{ route('ubah_pw', ['id' => auth()->user()->id]) }}" method="post" enctype="multipart/form-data">
+                @csrf
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Ubah Password</h5>
+                    </div>
+                    <div class="modal-body">
+                        <label for="password_lama" class="form-label">Password Lama</label>
+                        <input type="password" name="password_lama" class="form-control shadow-none">
+                    </div>
+                    <div class="modal-body">
+                        <label for="password_baru" class="form-label">Password Baru</label>
+                        <input type="password" name="password_baru" class="form-control shadow-none">
+                    </div>
+                    <div class="modal-body">
+                        <label for="konfirmasi_password_baru" class="form-label">Konfirmasi Password Baru</label>
+                        <input type="password" name="konfirmasi_password_baru" class="form-control shadow-none">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn text-secondary shadow-none" data-bs-dismiss="modal">Kembali</button>
+                        <button type="submit" class="btn btn-success text-white shadow-none" name="submit">Kirim</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+@endif
 
 
 <!-- Modal Login -->
@@ -79,7 +109,7 @@
                     @csrf
                     <div class="mb-3">
                         <label for="email" class="form-label">Email</label>
-                        <input type="email" name="email" class="form-control" id="email" placeholder="nama@gmail.com" value="{{ old('email') }}">
+                        <input type="email" name="email" class="form-control" id="email" placeholder="nama@gmail.com">
                     </div>
                     <div class="mb-3">
                         <label for="password" class="form-label">Password</label>
@@ -123,7 +153,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="email" class="form-label">Email</label>
-                        <input type="text" class="form-control" name="email" id="email" placeholder="nama@gmail.com" required>
+                        <input type="email" class="form-control" name="email" id="email" placeholder="nama@gmail.com" required>
                         <div class="invalid-feedback d-none" id="email_feedback"></div>
                     </div>
                     <div class="mb-3">

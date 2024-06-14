@@ -9,30 +9,78 @@ use App\Models\Pemesanan;
 use App\Models\Pembayaran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Produk;
 
 class PemesananController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function pesan($id)
-    {
-        $pesan = Pemesanan::with(['user', 'paket', 'keranjang', 'pembayaran'])->find($id);
 
-        if (!$pesan) {
-            return redirect()->back()->with('error', 'Pemesanan tidak ditemukan.');
+    public function beli_sekarang($id)
+    {
+        $userId = Auth::id(); // Get the ID of the logged-in user
+        $keranjangCount = Keranjang::where('user_id', $userId)->count();
+
+
+        return view('pesan', [
+            'title' => 'paket',
+            'paket'=> Paket::find($id),
+            'produk'=> produk::find($id),
+            'pembayaran' => Pembayaran::all(),
+            'keranjangCount' => $keranjangCount,
+        ]);
+        
+    }
+
+    public function beli(Request $request)
+    {
+        $pemesanan=new Pemesanan;
+        $pemesanan->user_id=$request->user_id;
+        $pemesanan->paket_id=$request->paket_id;
+        $pemesanan->pembayaran_id=$request->pembayaran_id;
+        $pemesanan->keranjang_id=$request->keranjang_id;
+        $pemesanan->jumlah_paket=$request->jumlah_paket;
+        $pemesanan->metode_asal=$request->metode_asal;
+        $pemesanan->rek_asal=$request->rek_asal;
+        $pemesanan->total_harga=$request->total_harga;
+        $pemesanan->bukti_pembayaran=$request->bukti_pembayaran;
+        $pemesanan->status=$request->status;
+
+        if ($request->hasFile('bukti_pembayaran')) {
+            $fileName1 = $request->file('bukti_pembayaran')->getClientOriginalName();
+            $request->file('bukti_pembayaran')->move('assets/img/upload', $fileName1);
+            $pemesanan->bukti_pembayaran = $fileName1;
         }
 
-        return view('pemesanan', [
-            'title' => 'paket',
-            'user' => $pesan->user,
-            'paket' => $pesan->paket,
-            'keranjang' => $pesan->keranjang,
-            'pembayaran' => $pesan->pembayaran,
-            'pesan' => $pesan,
+        $pemesanan->save();
+
+        return redirect('/riwayat')->with("tambah_pemesanan", "Pemesanan berhasil dibuat!");
+    }
+
+
+    public function riwayat()
+    {
+
+        $userId = Auth::id();
+        $keranjangCount = Keranjang::where('user_id', $userId)->count();
+        $pesan = Pemesanan::select('*')->whereIn('status',['Terkirim','Proses'])->get();
+
+        return view('riwayat', [
+            'keranjangCount' => $keranjangCount,
+            'keranjang' => Keranjang::all(),
+
+            'pesan' => $pesan
         ]);
     }
+
+    public function batal_pemesanan($id)
+    {
+        DB::table('pemesanans')->where('id',$id)->delete();
+        return redirect('/daftar_antrian')->with('delete_pemesanan', "Pemesanan Berhasil Dibatalkan!");
+    }
+
+
 
     public function daftar_antrian()
     {
@@ -83,22 +131,34 @@ class PemesananController extends Controller
 
     public function pesanankonfirmasi($id)
     {
-        // Retrieve the order details including the user who placed the order
         $pesanan = Pemesanan::find($id);
 
-        // Update the status to 'Terkirim'
-        $pesanan->update(['status' => 'Terkirim']);
+        if ($pesanan) {
+            $paket = Paket::find($pesanan->paket_id);
 
-        // Get the user's phone number
-        $user = $pesanan->user;
-        $no_wa = $user->no_wa;
+            if ($paket) {
+                $paket->stok -= $pesanan->jumlah_paket;
+                $paket->save();
+            }
 
-        // Message to be sent on WhatsApp
-        $message = urlencode("Terima kasih telah memesan di Ican Premium!");
+            $pesanan->status = 'Terkirim';
+            $pesanan->save();
 
-        // Redirect to WhatsApp with the message
-        return redirect("https://wa.me/{$no_wa}?text={$message}");
+            $user = $pesanan->user;
+            $no_wa = $user->no_wa;
+
+            $message = urlencode("Terima kasih telah memesan di Ican Premium!");
+
+            // Set a flash message for success
+            return redirect("https://wa.me/{$no_wa}?text={$message}")
+                ->with('kirim_pemesanan', 'Pesanan berhasil dikonfirmasi dan stok telah diperbarui.');
+        } else {
+            return redirect()->back()->with('error', 'Pesanan tidak ditemukan');
+        }
     }
+
+
+
 
 
 
@@ -108,11 +168,7 @@ class PemesananController extends Controller
         return view('admin/export-laporan',compact('riwayat'));
     }
 
-    public function delete_pemesanan($id)
-    {
-        DB::table('pemesanans')->where('id',$id)->delete();
-        return redirect('/daftar_antrian')->with('delete_pemesanan', "Pemesanan Berhasil Dihapus!");
-    }
+
 
     public function kalender()
     {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Aktor;
+use App\Models\Keranjang;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -14,6 +15,7 @@ class AktorController extends Controller
 {
     public function akun_admin( )
     {
+
         $admins = User::where('role', 'admin')->get();
         return view('admin/admin', [
             'title' => 'Akun Admin',
@@ -81,31 +83,38 @@ class AktorController extends Controller
     }
 
 
+    public function profile_admin()
+    {
+        return view('admin/profile_admin', [
+            'title' => 'Update user',
+            'user'=> User::all(),
+        ]);
+
+    }
+    public function edit_admin(Request $request)
+    {
+        $user= User::find($request->id);
+        $user->nama=$request->nama;
+        $user->email=$request->email;
+        $user->no_wa=$request->no_wa;
+        $user->save();
+
+        return redirect('/profile_admin')->with("edit_akun","Profil Berhasil Diupdate!");
+    }
+
     public function update_user()
     {
+        $userId = Auth::id();
+
+        $keranjangCount = Keranjang::where('user_id', $userId)->count();
         return view('profile', [
             'title' => 'Update user',
-            'user'=> User::all()
+            'user'=> User::all(),
+            'keranjangCount' => $keranjangCount,
         ]);
     }
 
-    public function edit_gambar($id, Request $request)
-    {
-        $request->validate([
-            'gambar' => 'required|image|mimes:pjeg,png,jpg,gif,svg',
-         ]);
 
-        $User = User::find($id);
-        $User->update($request->only(['gambar']));
-        if($request->has(('gambar'))){
-            $request->file('gambar')->move('assets/img/upload', $request->file('gambar')->getClientOriginalName());
-            $User->gambar = $request->file('gambar')->getClientOriginalName();
-            $User->save();
-        }
-        if ($User->save()){
-            return redirect('/profile/{id}/edit')->with('edit_gambar', 'Gambar Profil Berhasil Diupdate');
-        }
-    }
     public function edit_user(Request $request)
     {
         $user= User::find($request->id);
@@ -114,7 +123,7 @@ class AktorController extends Controller
         $user->no_wa=$request->no_wa;
         $user->save();
 
-        return redirect('/profile/{id}/edit')->with("edit_gambar","Profil Berhasil Diupdate!");
+        return redirect('/profile')->with("edit_akun","Profil Berhasil Diupdate!");
     }
 
     public function ubah_pw(Request $request, $id)
@@ -160,13 +169,6 @@ class AktorController extends Controller
         return redirect()->back()->with("delete_akun","Akun Berhasil di Hapus");
     }
 
-    public function update_akun($id)
-    {
-        return view('admin/update/update_admin', [
-            'title' => 'Update user',
-            'user'=> User::find($id)
-        ]);
-    }
     public function edit_akun(Request $request)
     {
         $user= User::find($request->id);

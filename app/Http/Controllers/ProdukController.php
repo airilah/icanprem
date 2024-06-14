@@ -7,6 +7,7 @@ use App\Models\Produk;
 use App\Models\Slider;
 use App\Models\Keranjang;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -18,17 +19,24 @@ class ProdukController extends Controller
      */
     public function index()
     {
+        $pesan = DB::table('pemesanans')->where('status', 'Terkirim')->count();
+        $customer = DB::table('users')->where('role', 'customer')->count();
+
         $userId = Auth::id();
 
-    // Hitung jumlah item keranjang yang dimiliki oleh pengguna yang sedang login
         $keranjangCount = Keranjang::where('user_id', $userId)->count();
+
         return view('index', [
             'title' => 'Home',
             'produk' => Produk::all(),
             'slider' => Slider::all(),
+            "paket" => Paket::all(),
             'keranjangCount' => $keranjangCount,
+            'pesan' => $pesan,
+            'customer' => $customer,
         ]);
     }
+
 
     public function daftar_produk()
     {
@@ -92,7 +100,7 @@ class ProdukController extends Controller
     {
         return view('admin/update/update_produk', [
             'title' => 'Update produk',
-            'produk'=> produk::find($id),
+            'produk'=> Produk::find($id),
         ]);
     }
 

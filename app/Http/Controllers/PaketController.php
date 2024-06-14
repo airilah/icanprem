@@ -23,19 +23,12 @@ class PaketController extends Controller
         $produk = Produk::with('paket')->find($id);
 
         // Check if $produk->paket is a collection
-        if ($produk->paket->isNotEmpty()) {
-            $paket_id = $produk->paket->first()->id; // Access the first item in the collection
-        } else {
-            $paket_id = null;
-        }
-
         return view('informasi', [
             'title' => 'paket',
             'paket' => $produk->paket,
             'produk' => $produk,
             'keranjangCount' => $keranjangCount,
             'user_id' => $userId,
-            'paket_id' => $paket_id, // Pass the $paket_id variable to the view
         ]);
     }
 

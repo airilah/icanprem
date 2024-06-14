@@ -20,19 +20,11 @@ class AdminController extends Controller
         $admin = DB::table('users')->where('role', ['admin'])->count();
         $antrian = Pemesanan::limit(10)->whereIn('status', ['Belum terverifikasi', 'Menunggu Konfirmasi'])->get();
         $paket = Paket::all();
+        $pesan = Pemesanan::where('status', 'Proses')->get();
+        $jual = Pemesanan::where('status', 'Terkirim')->get();
         $users = User::limit(5)->orderBy('created_at', 'desc')->where('role', 'customer')->get();
 
-        // $total_harga = Pemesanan::select(DB::raw("CAST(SUM(total_harga) as int) as total_harga"))
-        // ->whereIn('status', ['Bayar DP', 'Terkirim'])
-        // ->groupBy(DB::raw("Month(tanggal_sewa)"))
-        // ->orderByRaw("Month(tanggal_sewa)")
-        // ->pluck('total_harga');
 
-        // $bulan = Pemesanan::select(DB::raw("MONTHNAME(tanggal_sewa) as bulan"))
-        // ->groupBy(DB::raw("MONTHNAME(tanggal_sewa)"))
-        // ->orderByRaw("Month(tanggal_sewa)")
-        // ->pluck('bulan');
-
-        return view('admin/dashboard',compact('income','digunakan','customer','admin','antrian','antri','paket','users'));
+        return view('admin/dashboard',compact('income','digunakan','customer','admin','antrian','antri','paket','users','pesan','jual'));
     }
 }

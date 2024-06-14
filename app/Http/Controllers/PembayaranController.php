@@ -2,24 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Keranjang;
 use App\Models\Pembayaran;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class PembayaranController extends Controller
 {
-    public function info_pembayaran()
+    // untuk yg sudah login
+    public function info_bayar()
     {
-        return view('pembayaran', [
+        $userId = Auth::id();
+        $keranjangCount = Keranjang::where('user_id', $userId)->count();
+        return view('info_pembayaran', [
             'title' => 'pembayaran',
             'bayar' => Pembayaran::all(),
+            'keranjangCount' => $keranjangCount,
         ]);
     }
 
-    // untuk yg sudah login
-    public function hal_info_pembayaran()
+    public function informasi_bayar()
     {
-        return view('pembayaran', [
+        return view('info_pembayaran', [
             'title' => 'pembayaran',
             'bayar' => Pembayaran::all(),
         ]);
