@@ -70,11 +70,8 @@
                 </div>
             </div>
 
-        </section><!-- /Hero Section -->
-
-        <!-- Featured Services Section -->
+        </section>
         <section id="about" class="featured-services section">
-
             <div class="container">
                 <div class="container d-flex flex-column justify-content-center align-items-center text-center position-relative" style="margin-bottom: 30px" data-aos="zoom-out">
                     <img src="{{ asset('assets/img/logo.jpg') }}" class="img-fluid animated" width="200px">
@@ -93,7 +90,7 @@
                             <h4><a href="" class="stretched-link">Transaksi</a></h4>
                             <p>Telah melakukan transaksi sebanyak {{$pesan}}</p>
                         </div>
-                    </div><!-- End Service Item -->
+                    </div>
 
                     <div class="col-xl-3 col-md-6 d-flex" data-aos="fade-up" data-aos-delay="200">
                         <div class="service-item position-relative">
@@ -101,7 +98,7 @@
                             <h4><a href="" class="stretched-link">Pelanggan</a></h4>
                             <p>Website ini telah memilki pelanggan sebanyak {{$customer}}</p>
                         </div>
-                    </div><!-- End Service Item -->
+                    </div>
 
                     <div class="col-xl-3 col-md-6 d-flex" data-aos="fade-up" data-aos-delay="300">
                         <div class="service-item position-relative">
@@ -109,7 +106,7 @@
                             <h4><a href="" class="stretched-link">Testimoni</a></h4>
                             <p>Terpecaya, proses cepat dan bergaransi </p>
                         </div>
-                    </div><!-- End Service Item -->
+                    </div>
 
                     <div class="col-xl-3 col-md-6 d-flex" data-aos="fade-up" data-aos-delay="400">
                         <div class="service-item position-relative">
@@ -117,7 +114,7 @@
                             <h4><a href="" class="stretched-link">Harga Murah</a></h4>
                             <p>Harga lebih murah dari Anda beli di Aplikasinya langsung</p>
                         </div>
-                    </div><!-- End Service Item -->
+                    </div>
 
                 </div>
 

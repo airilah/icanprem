@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Auth;
 
 class PembayaranController extends Controller
 {
-    // untuk yg sudah login
     public function info_bayar()
     {
         $userId = Auth::id();

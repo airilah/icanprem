@@ -19,7 +19,7 @@ class PemesananController extends Controller
 
     public function beli_sekarang($id)
     {
-        $userId = Auth::id(); // Get the ID of the logged-in user
+        $userId = Auth::id();
         $keranjangCount = Keranjang::where('user_id', $userId)->count();
 
 
@@ -30,33 +30,35 @@ class PemesananController extends Controller
             'pembayaran' => Pembayaran::all(),
             'keranjangCount' => $keranjangCount,
         ]);
-        
+
     }
 
-    public function beli(Request $request)
-    {
-        $pemesanan=new Pemesanan;
-        $pemesanan->user_id=$request->user_id;
-        $pemesanan->paket_id=$request->paket_id;
-        $pemesanan->pembayaran_id=$request->pembayaran_id;
-        $pemesanan->keranjang_id=$request->keranjang_id;
-        $pemesanan->jumlah_paket=$request->jumlah_paket;
-        $pemesanan->metode_asal=$request->metode_asal;
-        $pemesanan->rek_asal=$request->rek_asal;
-        $pemesanan->total_harga=$request->total_harga;
-        $pemesanan->bukti_pembayaran=$request->bukti_pembayaran;
-        $pemesanan->status=$request->status;
+public function beli(Request $request)
+{
 
-        if ($request->hasFile('bukti_pembayaran')) {
-            $fileName1 = $request->file('bukti_pembayaran')->getClientOriginalName();
-            $request->file('bukti_pembayaran')->move('assets/img/upload', $fileName1);
-            $pemesanan->bukti_pembayaran = $fileName1;
-        }
+    // dd($request->all());
+    $pemesanan = new Pemesanan;
+    $pemesanan->user_id = $request->user_id;
+    $pemesanan->paket_id = $request->paket_id;
+    $pemesanan->pembayaran_id = $request->pembayaran_id;
+    $pemesanan->keranjang_id = $request->keranjang_id;
+    $pemesanan->jumlah_paket = $request->jumlah_paket;
+    $pemesanan->metode_asal = $request->metode_asal;
+    $pemesanan->rek_asal = $request->rek_asal;
+    $pemesanan->total_harga = $request->total_harga;
+    $pemesanan->status = $request->status;
 
-        $pemesanan->save();
-
-        return redirect('/riwayat')->with("tambah_pemesanan", "Pemesanan berhasil dibuat!");
+    if ($request->hasFile('bukti_pembayaran')) {
+        $fileName1 = $request->file('bukti_pembayaran')->getClientOriginalName();
+        $request->file('bukti_pembayaran')->move('assets/img/upload/', $fileName1);
+        $pemesanan->bukti_pembayaran = $fileName1;
     }
+
+    $pemesanan->save();
+
+    return redirect('/riwayat')->with("tambah_pemesanan", "Pemesanan berhasil dibuat!");
+}
+
 
 
     public function riwayat()
@@ -74,10 +76,11 @@ class PemesananController extends Controller
         ]);
     }
 
+
     public function batal_pemesanan($id)
     {
         DB::table('pemesanans')->where('id',$id)->delete();
-        return redirect('/daftar_antrian')->with('delete_pemesanan', "Pemesanan Berhasil Dibatalkan!");
+        return redirect('/riwayat')->with('delete_pemesanan', "Pemesanan Berhasil Dibatalkan!");
     }
 
 
@@ -112,13 +115,19 @@ class PemesananController extends Controller
 
         if ($request->hasFile('bukti_pembayaran')) {
             $fileName1 = $request->file('bukti_pembayaran')->getClientOriginalName();
-            $request->file('bukti_pembayaran')->move('assets/img/upload', $fileName1);
+            $request->file('bukti_pembayaran')->move('assets/img/upload/', $fileName1);
             $pemesanan->bukti_pembayaran = $fileName1;
         }
 
         $pemesanan->save();
 
         return redirect('/daftar_antrian')->with("tambah_pemesanan", "Pemesanan berhasil ditambah!");
+    }
+
+    public function delete_pemesanan($id)
+    {
+        DB::table('pemesanans')->where('id',$id)->delete();
+        return redirect('/daftar_antrian')->with('delete_pemesanan', "Pemesanan Berhasil Dibatalkan!");
     }
 
 
@@ -147,9 +156,9 @@ class PemesananController extends Controller
             $user = $pesanan->user;
             $no_wa = $user->no_wa;
 
-            $message = urlencode("Terima kasih telah memesan di Ican Premium!");
+            $message = rawurlencode("Terima kasih telah memesan di Ican Premium!");
 
-            // Set a flash message for success
+            // Redirect to WhatsApp with the encoded message
             return redirect("https://wa.me/{$no_wa}?text={$message}")
                 ->with('kirim_pemesanan', 'Pesanan berhasil dikonfirmasi dan stok telah diperbarui.');
         } else {

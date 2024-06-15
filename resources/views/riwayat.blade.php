@@ -50,8 +50,10 @@
                                     <p class="fs-3"><b>Nama Paket</b></p>
                                     <hr>
                                     <div class="d-flex">
+                                        <div class="d-flex align-items-center" style="height: 100px">
                                         <img src="{{ asset('assets/img/' . $item->paket->produk['gambar1']) }}"
                                             class="card-img-top mx-2" style="width: 100px">
+                                        </div>
                                         <div class="text-start align-self-center">
                                             <p class="fs-4"><b>{{ $item->paket['nama_paket'] }}</b></p>
                                             <p class="fs-5">{{ $item->jumlah_paket }} Paket - Rp {{ $item->total_harga }}</p>
@@ -85,7 +87,7 @@
                                                             <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
                                                         <div class="modal-body p-0 d-flex justify-content-center">
-                                                            <img src="{{ asset('assets/img/upload/' . $item->bukti_pembayaran) }}" alt="{{ $item->bukti_pembayaran }}" class="img-fluid">
+                                                            <img src="{{ asset('assets/img/upload/'.$item->bukti_pembayaran) }}" alt="{{ $item->bukti_pembayaran }}" class="img-fluid">
                                                         </div>
                                                     </div>
                                                 </div>

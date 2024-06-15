@@ -22,12 +22,9 @@
                     </ol>
                 </nav>
             </div>
-        </div><!-- End Page Title -->
+        </div>
 
-        <!-- Starter Section Section -->
         <section id="starter-section" class="starter-section section">
-
-            <!-- Section Title -->
             <div class="container section-title" data-aos="fade-up">
                 <div class="row">
                     <div class="col-md-4 col-12">
@@ -61,7 +58,7 @@
                         </div>
                     </div>
                     <div class="col-12 col-md-8">
-                        <form action="/beli" method="post">
+                        <form action="/beli" method="post" enctype="multipart/form-data">
                             @csrf
                             <input type="hidden" value="{{ auth()->user()->id }}" name="user_id">
                             <input type="hidden" value="{{ $paket->id }}" name="paket_id">
@@ -154,7 +151,7 @@
                                         </div>
                                         <div class="col-md-6 mb-4">
                                             <label class="form-label fw-bold">Bukti Pembayaran</label>
-                                            <input type="file" name="bukti_pembayaran" id="site_title_inp" class="form-control shadow-none" accept="image/*" required>
+                                            <input type="file" name="bukti_pembayaran" id="bukti_pembayaran" class="form-control shadow-none" accept="image/*" required>
                                         </div>
                                         <input type="hidden" name="status" value="Proses">
                                         <div class="d-flex justify-content-between mt-3">

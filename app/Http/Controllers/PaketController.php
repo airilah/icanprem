@@ -8,21 +8,17 @@ use App\Models\Keranjang;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 
 class PaketController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function informasi($id)
     {
-        $userId = Auth::id(); // Get the ID of the logged-in user
+        $userId = Auth::id();
         $keranjangCount = Keranjang::where('user_id', $userId)->count();
 
         $produk = Produk::with('paket')->find($id);
 
-        // Check if $produk->paket is a collection
         return view('informasi', [
             'title' => 'paket',
             'paket' => $produk->paket,
@@ -31,32 +27,8 @@ class PaketController extends Controller
             'user_id' => $userId,
         ]);
     }
-
-
-
-    // public function tambah_keranjang(Request $request)
-    // {
-    //     {
-    //         $keranjang=new Keranjang;
-    //         $keranjang->user_id=$request->user_id;
-    //         $keranjang->paket_id=$request->paket_id;
-    //         $keranjang->save();
-
-    //         return redirect('/pesan/{id}')->with("tambah_keranjang","Berhasil masuk keranjang!");
-    //     }
-    // }
-
-    // public function index()
-    // {
-    //     return view('paket', [
-    //         'title' => 'Paket',
-    //         'paket' => Paket::all(),
-    //     ]);
-    // }
-
     public function daftar_paket()
     {
-        // $pakets = Paket::with('produk')->get();
         return view('admin/paket', [
             'title' => 'paket',
             'paket' => Paket::all(),
@@ -92,16 +64,6 @@ class PaketController extends Controller
             'produk'=> produk::all()
         ]);
     }
-
-    // public function edit_paket1($id, Request $request)
-    // {
-    //     $paket = Paket::find($id);
-    //     $paket->update($request->except(['token', 'submit']));
-    //     if ($paket->save()){
-    //         return redirect('/paket')->with('edit_paket', 'paket Berhasil Diupdate');
-    //     }
-    // }
-
 
 
     public function edit_paket(Request $request)

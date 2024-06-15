@@ -24,10 +24,7 @@
             </div>
         </div><!-- End Page Title -->
 
-        <!-- Starter Section Section -->
         <section id="starter-section" class="starter-section section">
-
-            <!-- Section Title -->
             <div class="container section-title" data-aos="fade-up">
                 <div class="row">
                     <div class="col-md-4 col-12">

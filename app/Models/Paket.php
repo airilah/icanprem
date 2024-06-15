@@ -13,7 +13,14 @@ class Paket extends Model
 
     protected $table = 'pakets';
     protected $guards = [];
-    protected $fillable=['id','produk_id','nama_paket','catatan','stok','harga'];
+    protected $fillable=[
+    'id',
+    'produk_id',
+    'nama_paket',
+    'catatan',
+    'stok',
+    'harga'
+    ];
 
     public function pemesanan()
     {

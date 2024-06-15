@@ -37,7 +37,7 @@ class DatabaseSeeder extends Seeder
             ],[
                 "nama_produk"  => "Youtube",
                 "deskripsi"  => "Iklan Dihilangkan: Tidak melihat iklan saat menonton, menghindari gangguan; Konten Offline: Mengunduh video untuk ditonton tanpa internet; Latar Belakang & Penguncian: Mendengarkan audio dari video di latar belakang atau layar terkunci; Akses ke YouTube Music Premium: Dengarkan musik tanpa iklan, offline, dan di latar belakang",
-                "gambar1"  => "Youtube.png",
+                "gambar1"  => "youtube.png",
                 "gambar2"  => "youtube2.jpg",
             ],[
                 "nama_produk"  => "Vidio",

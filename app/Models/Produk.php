@@ -11,7 +11,11 @@ class Produk extends Model
     use HasFactory;
     protected $table = 'produks';
     protected $guards = [];
-    protected $fillable=['id','nama_produk','deskripsi'];
+    protected $fillable=[
+    'id',
+    'nama_produk',
+    'deskripsi'
+    ];
 
     public function paket()
     {
