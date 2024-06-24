@@ -229,7 +229,7 @@
                                                     </div>
 
                                                     <a class="btn btn-danger" href="#" data-bs-toggle="modal" data-bs-target="#hapus{{ $item->id }}">
-                                                        <i class="bi bi-trash"></i>x
+                                                        <i class="bi bi-trash"></i>
                                                     </a>
                                                     <div class="modal fade" id="hapus{{ $item->id }}" tabindex="-1">
                                                         <div class="modal-dialog">

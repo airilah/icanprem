@@ -29,7 +29,7 @@ Route::group(['middleware' => ['auth', 'cekRole:customer']], function () {
     Route::post('/masuk_keranjang', [KeranjangController::class, 'masuk_keranjang'])->name('masuk_keranjang');
     Route::get('/list_keranjang', [KeranjangController::class,'list_keranjang'])->name('list_keranjang');
     Route::get('/hapus_keranjang/{id}', [KeranjangController::class,'hapus_keranjang'])->name('hapus_keranjang');
-    Route::get('/checkout/{id}', [KeranjangController::class,'checkout'])->name('checkout');
+    Route::post('/checkout', [KeranjangController::class,'checkout'])->name('checkout');
 
     Route::get('/info_beli', [InformasiController::class, 'info_beli'])->name('info_beli');
     Route::get('/info_bayar', [PembayaranController::class, 'info_bayar'])->name('info_bayar');
